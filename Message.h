@@ -1,7 +1,7 @@
 /*
 Created by
 姜楠 符云霏 李昊东
-2019/10/22
+2019/10/23
 给出消息的定义
 */
 #ifndef MESSAGE_H
@@ -16,19 +16,16 @@ Created by
 class Message
 {
 private:
-    unsigned int Type;
     char* Msg;
 
 public:
     Message(const unsigned int _Type, char* _Msg);
     ~Message();
-    unsigned int getType() const;
     char* getMsg() const;
 };
 
-Message::Message(const unsigned int _Type, char* _Msg)
+Message::Message(char* _Msg)
 {
-    Type = _Type;
     Msg = new char[strlen(_Msg)+1];
     strcpy(Msg, _Msg);
 }
@@ -36,11 +33,6 @@ Message::Message(const unsigned int _Type, char* _Msg)
 Message::~Message()
 {
     delete[] Msg;
-}
-
-unsigned int Message::getType()
-{
-    return Type;
 }
 
 char* Message::getMsg()
@@ -54,11 +46,11 @@ class ItemMessage: public Message
 private:    //包含任务类型+货物信息
     char* Task;
 public:
-    ItemMessage(char* _Task):Message();
+    ItemMessage(char* _Task):Message(char* _Msg);
     ~ItemMessage();
 };
 
-ItemMessage::ItemMessage(char* _Task):Message()
+ItemMessage::ItemMessage(char* _Task):Message(char* _Msg)
 {
     Task = new char[strlen(_Task)+1];
     strcpy(Task, _Task);
@@ -76,11 +68,11 @@ private:    //包含对象身份+任务类型+对象信息
     char* Identity;
     char* Task;
 private:
-    UserMessage(char* _Identity, char* _Task):Message();
+    UserMessage(char* _Identity, char* _Task):Message(char* _Msg);
     ~UserMessage();
 }
 
-UserMessage::UserMessage(char* _Identity, char* _Task):Message()
+UserMessage::UserMessage(char* _Identity, char* _Task):Message(char* _Msg)
 {
     Identity = new char[strlen(_Identity)+1];
     strcpy(Identity, _Identity);
