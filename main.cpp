@@ -6,7 +6,9 @@ Created by
 
 //引入标准库
 #include <iostream>
+#include <cstdio>
 #include <cstring>
+#include <cctype>
 #include <queue>
 using std::cout;
 using std::cin;
@@ -24,7 +26,7 @@ class InteractSystem
 private:
     //预定义命令参数
     static const char* CLR = "--clear";
-    static const char* LIM = "--lim";
+    static const char* LIM = "--limit";
     static const char* TEST = "--test";
 
     //系统设置
@@ -45,7 +47,51 @@ public:
 
 InteractSystem::InteractSystem(int argc, char* argv[])
 {
+    for(int i = 1; i <= argc; ++i)
+    {
+        if(strcmp(argv[i], CLR))
+        {
 
+        }
+        else if(strcmp(argv[i], LIM))
+        {
+            ++i;
+            sscanf(argv[i], "%d", &SizeLimit);
+            while(SizeLimit < 0)
+            {
+                cerr << "The size limitation is illegal, please reset it.\n"
+                cin >> SizeLimit;
+            }
+        }
+        else if(strcmp(argv[i], TEST))
+        {
+            IfTest = true;
+        }
+    }
+
+    cout << "Please input the tasks\n";
+    char Input[200] = "";
+    unsigned int CurType;
+    char CurMsg[100], CurTask[100], CurIdentity[100];
+    
+    do
+    {
+        cin.getline(Input, 199);
+        sscanf(Input, "%d", &CurType);
+        if(CurType == 0)                //货物消息
+        {
+
+        }
+        else if(CurType == 1)           //用户消息
+        {
+
+        }
+        else
+        {
+            for(int i = 0; Input[i] != '\0'; ++i)
+                Input[i] = toupper(Input[i]);
+        }
+    }while(strcmp(Input, "END"))
 };
 
 InteractSystem::~InteractSystem()
