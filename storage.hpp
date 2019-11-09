@@ -4,7 +4,7 @@
 
 #include<time.h>
 
-class package{
+class Package{
 	private:
         char* orderNumber;
         int idOfCustomer;
@@ -21,18 +21,20 @@ class package{
         static char sizeMap[5];
         static char weightMap[5];
 
+        Package();
+        Package(int id,const char* address,int size,int weight,int type);
+
         bool isCancled();
         void judgeInfo(ItemMessage msg);
-        void setPackage(int id,const char* address,int size,int weight,int type);
         void showInformation();
         void setStatus(int s);
-        void showStatus();
+        char getStatus();
         void setDeliver(int name);
         void setTime(int t);
-        void showTime(int t);
+        tm getTime(int t);
         tm estimateTime(tm t);
         void printReceipt(double money);
-        bool operator<(const package &p){
+        bool operator<(const Package &p){
             if(this->typeOfService!=p.typeOfService)
                 return this->typeOfService<p.typeOfService;
             else{ //假设订单在同一个月
@@ -52,11 +54,11 @@ class package{
 
 //statusMap:"cancelled","ready for pickup","picked up","arrived at warehouse","out of delivery","delivered"
 
-char package::statusMap[6]={"123456"};
-char package::sizeMap[5]={"12345"};
-char package::weightMap[5]={"12345"};
+char Package::statusMap[6]={"123456"};
+char Package::sizeMap[5]={"12345"};
+char Package::weightMap[5]={"12345"};
 
-bool package::isCancled(){
+bool Package::isCancled(){
     return (!status)true:false;
 }
 
@@ -68,7 +70,7 @@ Task:
 4:打印收据
 */
 
-void package::judgeInfo(ItemMessage msg){
+void Package::judgeInfo(ItemMessage msg){
     char* t=msg.Task;
     char*m=msg.Msg; //未处理
     switch(*t):
@@ -90,8 +92,21 @@ void package::judgeInfo(ItemMessage msg){
         break;
 }
 
-void package::setPackage(int id,const char* address,int size,int weight,int type){
-	for(int i=0;i<10;i++)
+Package::Package(){
+    for(int i=0;i<5;i++)
+        *(orderNumber+i)='0';
+    idOfCustomer=0;
+    strcpy(addressDeliverTo,address);
+	sizeOfPackage=0;
+    weightOfPackage=0;
+    typeOfService=0;
+    priceOfPackage=0;
+    setStatus(0);
+    deliver=0;
+}
+
+Package::Package(int id,const char* address,int size,int weight,int type){
+	for(int i=0;i<5;i++)
         *(orderNumber+i)=rand()%10+'0'; //随机生成编号
     idOfCustomer=id;
     strcpy(addressDeliverTo,address);
@@ -100,10 +115,10 @@ void package::setPackage(int id,const char* address,int size,int weight,int type
     typeOfService=type;
     priceOfPackage=size*weight*type; //计算价格的方法
     setStatus(1);
-    setDeliver(findDeliver(*address)); //根据包裹信息设置快递员（未定义）
+    deliver=findDeliver(*address); //根据包裹信息设置快递员（未定义）
 }
 
-void package::showInformation(){
+void Package::showInformation(){
 	showCustomerInfo(*id); //用户信息(未定义)
     cout<<"Deliver To:"<<addressDeliverTo<<endl;
     cout<<"Price:"<<priceOfPackage<<endl;
@@ -111,23 +126,20 @@ void package::showInformation(){
     showStatus();
 }
 
-void package::setStatus(int s){
+void Package::setStatus(int s){
     status=s;
     setTime(status);
 }
 
-void package::showStatus(){
-	cout<<statusMap[status]; //显示包裹状态
+char Package::getStatus(){
+	return statusMap[status]; //显示包裹状态
 }
 
-void package::setDeliver(int name){
-    deliver=name;
-}
-void package::printReceipt(double money){ //money:收到的
+void Package::printReceipt(double money){ //money:收到的
     cout<<priceOfPackage; //收据信息
 }
 
-tm package::estimateTime(tm t){
+tm Package::estimateTime(tm t){
     tm tt=t;
     if(typeOfService==2)
         tt.hour+=2;
@@ -136,14 +148,12 @@ tm package::estimateTime(tm t){
     return tt;
 }
 
-void package::setTime(int t){
+void Package::setTime(int t){
     *timeInfo[t]=localtime(&now); //设置时间
 }
 
-void package::showTime(int t){
-    tm T;
-    if(t!=1) T=timeInfo[t];
-    else T=estimateTime(t);
-    cout<<T.tm_year<<"/"<<T.tm_mon<<"/"<<T.tm_mday<<" ";
-    cout<<T.tm_hour<<":"<<T.tm_min<<":"<<T.tm_sec<<endl;
+tm Package::getTime(int t){
+    if(t!=1) return timeInfo[t];
+    else return estimateTime(t);
+    
 }
